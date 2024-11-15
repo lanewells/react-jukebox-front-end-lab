@@ -16,6 +16,7 @@ const TrackDetail = (props) => {
       <button onClick={() => props.handleRemoveTrack(props.selected._id)}>
         Delete
       </button>
+      <button onClick={() => props.playTrack(props.selected)}>Play</button>
     </div>
   )
 }

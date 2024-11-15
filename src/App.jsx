@@ -3,11 +3,13 @@ import * as trackService from "./services/trackService"
 import TrackList from "./components/TrackList"
 import TrackDetail from "./components/TrackDetail"
 import TrackForm from "./components/TrackForm"
+import NowPlaying from "./components/NowPlaying"
 
 const App = () => {
   const [trackList, setTrackList] = useState([])
   const [selected, setSelected] = useState(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [isTrackPlaying, setIsTrackPlaying] = useState(false)
 
   useEffect(() => {
     const getTracks = async () => {
@@ -26,7 +28,8 @@ const App = () => {
   }, [])
 
   const handleFormView = (track) => {
-    if (!track.name) setSelected(null)
+    if (!track.title) setSelected(null)
+    console.log("Selected track is: ", track.title)
     setIsFormOpen(!isFormOpen)
   }
 
@@ -62,22 +65,25 @@ const App = () => {
 
       console.log("Updated track:", updatedTrack)
 
-      // Update the track in the trackList state
       setTrackList((prevTrackList) =>
         prevTrackList.map((track) =>
           track._id === trackId ? updatedTrack : track
         )
       )
 
-      // Reset selected and form states
       setSelected(null)
       setIsFormOpen(false)
-
-      // Optional: Notify the user of success
-      console.log("Track updated successfully!")
     } catch (error) {
       console.error("Failed to update track:", error)
     }
+  }
+
+  const playTrack = (track) => {
+    setSelected(track)
+    setIsTrackPlaying(true)
+
+    console.log(isFormOpen)
+    console.log("Playing track with title:", track.title)
   }
 
   const handleRemoveTrack = async (trackId) => {
@@ -117,8 +123,15 @@ const App = () => {
           selected={selected}
           handleFormView={handleFormView}
           handleRemoveTrack={handleRemoveTrack}
+          playTrack={playTrack}
+          isTrackPlaying={isTrackPlaying}
         />
       )}
+      <NowPlaying
+        selected={selected}
+        playTrack={playTrack}
+        isTrackPlaying={isTrackPlaying}
+      />
     </>
   )
 }
